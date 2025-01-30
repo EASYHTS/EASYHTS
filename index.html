@@ -1,36 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HTS Code查询工具</title>
+    <title>HTS Code双向查询工具</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        #result { margin-top: 20px; }
+        /* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .search-box {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .result-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
-    <h1>HTS Code税率查询</h1>
-    <input type="text" id="searchInput" placeholder="输入商品名称或HTS Code">
-    <button onclick="search()">查询</button>
-    <div id="result"></div>
+    <h1>HTS Code双向查询</h1>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="输入HTS Code或商品关键词">
+        <button onclick="searchData()">查询</button>
+    </div>
+    <div id="results"></div>
 
     <script>
-        // 假设这是你的“数据库”（只是一个对象）
-        const htsData = {
-            "0901.21.0000": { description: "咖啡豆", rate: "0%" },
-            "8471.30.5100": { description: "笔记本电脑", rate: "3.9%" }
-        };
+        // 模拟数据库（实际使用时需替换为真实数据或API）
+        const htsData = [
+            { code: "0901.21.0000", description: "咖啡豆", rate: "0%" },
+            { code: "8471.30.5100", description: "笔记本电脑", rate: "3.9%" },
+            { code: "8471.30.5200", description: "平板电脑", rate: "4.2%" },
+            { code: "9403.30.0000", description: "木质家具", rate: "2.5%" },
+        ];
 
-        function search() {
-            const input = document.getElementById("searchInput").value;
-            const resultDiv = document.getElementById("result");
-            if (htsData[input]) {
-                resultDiv.innerHTML = `
-                    <h3>${input}</h3>
-                    <p>商品描述：${htsData[input].description}</p>
-                    <p>税率：${htsData[input].rate}</p>
-                `;
+        // 双向查询函数
+        function searchData() {
+            const input = document.getElementById("searchInput").value.trim().toLowerCase();
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = ""; // 清空旧结果
+
+            if (!input) {
+                resultsDiv.innerHTML = "<div>请输入查询内容！</div>";
+                return;
+            }
+
+            // 遍历数据，匹配 HTS Code 或商品描述
+            const matchedItems = htsData.filter(item => {
+                return (
+                    item.code.toLowerCase().includes(input) ||      // 匹配HTS Code
+                    item.description.toLowerCase().includes(input)  // 匹配商品描述
+                );
+            });
+
+            // 显示结果
+            if (matchedItems.length > 0) {
+                matchedItems.forEach(item => {
+                    resultsDiv.innerHTML += `
+                        <div class="result-item">
+                            <strong>${item.code}</strong><br>
+                            商品：${item.description}<br>
+                            税率：${item.rate}
+                        </div>
+                    `;
+                });
             } else {
-                resultDiv.innerHTML = "未找到结果！";
+                resultsDiv.innerHTML = "<div>未找到匹配结果！</div>";
             }
         }
     </script>
