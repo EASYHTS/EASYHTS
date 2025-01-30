@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTS Code查询工具</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>HTS Code税率查询</h1>
+    <input type="text" id="searchInput" placeholder="输入商品名称或HTS Code">
+    <button onclick="search()">查询</button>
+    <div id="result"></div>
+
+    <script>
+        // 假设这是你的“数据库”（只是一个对象）
+        const htsData = {
+            "0901.21.0000": { description: "咖啡豆", rate: "0%" },
+            "8471.30.5100": { description: "笔记本电脑", rate: "3.9%" }
+        };
+
+        function search() {
+            const input = document.getElementById("searchInput").value;
+            const resultDiv = document.getElementById("result");
+            if (htsData[input]) {
+                resultDiv.innerHTML = `
+                    <h3>${input}</h3>
+                    <p>商品描述：${htsData[input].description}</p>
+                    <p>税率：${htsData[input].rate}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = "未找到结果！";
+            }
+        }
+    </script>
+</body>
+</html>
